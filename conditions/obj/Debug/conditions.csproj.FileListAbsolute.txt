@@ -1,0 +1,7 @@
+C:\Users\Серога\source\repos\conditions\conditions\bin\Debug\conditions.exe.config
+C:\Users\Серога\source\repos\conditions\conditions\bin\Debug\conditions.exe
+C:\Users\Серога\source\repos\conditions\conditions\bin\Debug\conditions.pdb
+C:\Users\Серога\source\repos\conditions\conditions\obj\Debug\conditions.csproj.AssemblyReference.cache
+C:\Users\Серога\source\repos\conditions\conditions\obj\Debug\conditions.csproj.CoreCompileInputs.cache
+C:\Users\Серога\source\repos\conditions\conditions\obj\Debug\conditions.exe
+C:\Users\Серога\source\repos\conditions\conditions\obj\Debug\conditions.pdb
