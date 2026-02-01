@@ -31,6 +31,45 @@ namespace conditions
                 Console.WriteLine(digits[i]);
             }
 
+
+
+            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
+            MySqlConnection connection = new MySqlConnection(connString);
+            try
+            {
+                connection.Open();
+                Console.WriteLine("З'єднання встановлено успішно!");
+
+                string query = "SELECT * FROM users";
+                MySqlCommand command = new MySqlCommand(query, connection);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Припустимо, у вас є колонка "name"
+                        Console.Write(reader["name"].ToString());
+
+                        Console.Write("    ");
+                        Console.Write(reader["last_name"].ToString());
+
+                        Console.Write("    ");
+
+                        Console.Write(reader["age"].ToString()); Console.Write("    ");
+                        Console.Write(reader["position"].ToString());
+                        Console.WriteLine("    ");
+                        }
+                    }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Помилка: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
     }
 }
