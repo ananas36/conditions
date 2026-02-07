@@ -70,6 +70,39 @@ namespace conditions
             {
                 connection.Close();
             }
+
+            
+
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // SQL запит із плейсхолдерами (@name, @email)
+                    //string sql = "INSERT INTO users (full_name, email, password) VALUES (@name, @email, @pass)";
+                    string sql = "INSERT INTO users (name, last_name, position, age) VALUES(@name, @last_name, @position,@age)"; 
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        // Додаємо реальні дані замість плейсхолдерів
+                        cmd.Parameters.AddWithValue("@name", "Олексій ");
+                        cmd.Parameters.AddWithValue("@last_name", "Катеренчуук");
+                        cmd.Parameters.AddWithValue("@position", "приберальник");
+                        cmd.Parameters.AddWithValue("@age", "11");
+                            
+                        // Виконуємо запит
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        Console.WriteLine($"Успішно додано рядків: {rowsAffected}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Помилка: " + ex.Message);
+                }
+            }
         }
     }
 }
