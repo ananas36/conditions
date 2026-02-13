@@ -4,17 +4,14 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using MySql.Data.MySqlClient; // Додаємо цей простір імен
 
 namespace conditions
 {
     internal class Program
     {
-        struct Student
-        {
-            public string Name, Surname; public DateTime Birthday;
-            public byte Maths, Physics, History, Ukrainian; public double Average;
-        }
+        
         static void Main(string[] args)
         {
             //int one = 1; int two = 2; int three = 3;
@@ -38,7 +35,7 @@ namespace conditions
             //}
 
             bool data = false; bool exit = false;
-            int loopLenght = 1;
+            
             while (!exit)
             {
                 Console.WriteLine("Зробiть вибiр:");
@@ -172,7 +169,55 @@ namespace conditions
                         }
                     case 4:
                         {
-                            Console.WriteLine("ЩО ТИ ТУТ ЗАБРАВСЯ МІНЯТИ?");
+                            Console.WriteLine("ЩО ТИ ТУТ ЗАБРАВСЯ М1НЯТИ?");
+                            
+
+                            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
+                            // Дані, які ми хочемо змінити
+                            
+                            Console.WriteLine("ведіть id користувача якого хочити редагувати");
+                            int userId = Convert.ToInt32(Console.ReadLine()); Console.Clear();
+                            Console.WriteLine("ведінть 1мя на яке хочити змінити");
+                            string newName = Convert.ToString(Console.ReadLine()); Console.Clear();
+                            Console.WriteLine("ведінть Прізвище на яке хочити змінити");
+                            string last_name = Convert.ToString(Console.ReadLine()); Console.Clear();
+                            Console.WriteLine("ведінть статус на яке хочити змінити");
+                            string position = Convert.ToString(Console.ReadLine()); Console.Clear();
+                            // 2. SQL-запит з використанням SET та параметрів
+                            string sqlExpression = "UPDATE Users SET name = @name,position = @position,last_name = @last_name WHERE Id = @id";
+                            
+
+
+                            using (MySqlConnection connection = new MySqlConnection(connString))
+                            {
+                                try
+                                {
+                                    connection.Open();
+
+                                    MySqlCommand command = new MySqlCommand(sqlExpression, connection);
+
+                                    // 3. Додаємо всі параметри для безпеки
+                                    command.Parameters.AddWithValue("@name", newName);
+                                    command.Parameters.AddWithValue("@id", userId);
+                                    command.Parameters.AddWithValue("@last_name", last_name);
+                                    command.Parameters.AddWithValue("@position", position);
+
+
+
+
+                                    // 4. Виконуємо команду
+                                    int result = command.ExecuteNonQuery();
+
+                                    if (result > 0)
+                                        Console.WriteLine("Дані успішно оновлено!");
+                                    else
+                                        Console.WriteLine("Користувача з таким ID не знайдено.");
+                                }
+                                catch (MySqlException ex)
+                                {
+                                    Console.WriteLine($"Помилка MySQL: {ex.Message}");
+                                }
+                            }
                             data = true; break;
                         }
 
