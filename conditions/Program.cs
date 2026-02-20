@@ -14,28 +14,9 @@ namespace conditions
         
         static void Main(string[] args)
         {
-            //int one = 1; int two = 2; int three = 3;
-            //int four = 4; int five = 5; int six = 6;
-            //int seven = 7; int ten = 10; int eleven = 11;
-            ////==;<=;>=;<;>;!=;
-            //if (one == two)
-            //{
-            //    Console.WriteLine("one=two");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("one!=two");
-            //}
-            
-            //int[] digits = { 11, 2, 6, 9, 5, 3, 2 };
-            //Console.WriteLine(digits.Length);
-            //for (int i = 0; i < digits.Length; i++)
-            //{
-            //    Console.WriteLine(digits[i]);
-            //}
-
             bool data = false; bool exit = false;
-            
+                            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
+
             while (!exit)
             {
                 Console.WriteLine("Зробiть вибiр:");
@@ -52,7 +33,6 @@ namespace conditions
                     case 1:
                         {
 
-                            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
                             MySqlConnection connection = new MySqlConnection(connString);
 
                             try
@@ -92,12 +72,11 @@ namespace conditions
                             {
                                 connection.Close();
                             }
-                            data = true; break;
+                            break;
                         }
 
                     case 2:
                         {
-                            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
                             using (MySqlConnection conn = new MySqlConnection(connString))
                             {
                                 try
@@ -127,14 +106,13 @@ namespace conditions
                                     Console.WriteLine("Помилка: " + ex.Message);
                                 }
                             }
-                            data = true; break;
+                             break;
                         }
                     case 3:
                         {
                             Console.WriteLine("вид1ть id користувача якого збараєтесь видалити");
                             int userIdToRemove = Convert.ToInt32(Console.ReadLine()); Console.Clear();
 
-                            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
                             string sqlExpression = "DELETE FROM Users WHERE Id = @id";
                             MySqlConnection connection = new MySqlConnection(connString);
                             using (MySqlConnection connectio = new MySqlConnection(connString))
@@ -165,14 +143,13 @@ namespace conditions
                                     Console.WriteLine($"Помилка бази даних: {ex.Message}");
                                 }
                             }
-                            data = true; break;
+                             break;
                         }
                     case 4:
                         {
                             Console.WriteLine("ЩО ТИ ТУТ ЗАБРАВСЯ М1НЯТИ?");
                             
 
-                            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
                             // Дані, які ми хочемо змінити
                             
                             Console.WriteLine("ведіть id користувача якого хочити редагувати");
@@ -218,7 +195,7 @@ namespace conditions
                                     Console.WriteLine($"Помилка MySQL: {ex.Message}");
                                 }
                             }
-                            data = true; break;
+                             break;
                         }
 
 
