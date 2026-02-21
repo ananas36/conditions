@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using MySql.Data.MySqlClient; // Додаємо цей простір імен
@@ -11,12 +12,49 @@ namespace conditions
 {
     internal class Program
     {
-        
+        static void Write_table(MySqlCommand command, bool isId = true, bool isName = true,bool isLastname = true, bool isAge = true, bool isposition = true)
+        {
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    if (isId)
+                    {
+                        Console.Write(reader["id"].ToString());
+                        Console.Write("  ");
+                    }
+                    if (isName)
+                    {
+                        Console.Write(reader["name"].ToString());
+                        Console.Write("    ");
+                    }
+                    if (isLastname)
+                    {
+                        Console.Write(reader["last_name"].ToString());
+
+                        Console.Write("    ");
+                    }
+                    if (isAge)
+                    {
+                        Console.Write(reader["age"].ToString());
+                        Console.Write("    ");
+                    }
+                    if (isposition)
+                    {
+                        Console.Write(reader["position"].ToString());
+                    }
+                    Console.WriteLine("    ");
+
+                }
+            }
+        }
+
         static void Main(string[] args)
         {
-            bool data = false; bool exit = false;
-                            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
 
+            bool exit = false;
+            string connString = "server=localhost;port=3306;database=dev_db;user=root;password=2RW4X5lRv;";
+            
             while (!exit)
             {
                 Console.WriteLine("Зробiть вибiр:");
@@ -24,15 +62,16 @@ namespace conditions
                               "2 - додати нового користувача\n" +
                               "3 - видалити користувача \n" +
                               "4 - змінити інформацію\n" +
+                              "5 - пошук по імені\n" +
+                              "6 - групування по прізвищу, вивести унікальні\n" +
+                              "7 - сортування по будь якому полю\n" +
                               "0 - Вихiд\n->");
                 int n = Convert.ToInt32(Console.ReadLine()); Console.Clear();
+            
                 switch (n)
                 {
-                    
-
                     case 1:
                         {
-
                             MySqlConnection connection = new MySqlConnection(connString);
 
                             try
@@ -43,27 +82,8 @@ namespace conditions
                                 string query = "SELECT * FROM users";
                                 MySqlCommand command = new MySqlCommand(query, connection);
 
-                                using (MySqlDataReader reader = command.ExecuteReader())
-                                {
-                                    while (reader.Read())
-                                    {
-                                        // Припустимо, у вас є колонка "name"
-                                        Console.Write(reader["id"].ToString());
-                                        Console.Write("  ");
-                                        Console.Write(reader["name"].ToString());
-
-                                        Console.Write("    ");
-                                        Console.Write(reader["last_name"].ToString());
-
-                                        Console.Write("    ");
-
-                                        Console.Write(reader["age"].ToString()); Console.Write("    ");
-                                        Console.Write(reader["position"].ToString());
-                                        Console.WriteLine("    ");
-                                    }
-                                }
+                                Write_table(command);
                             }
-
                             catch (Exception ex)
                             {
                                 Console.WriteLine("Помилка: " + ex.Message);
@@ -72,6 +92,7 @@ namespace conditions
                             {
                                 connection.Close();
                             }
+
                             break;
                         }
 
@@ -106,7 +127,8 @@ namespace conditions
                                     Console.WriteLine("Помилка: " + ex.Message);
                                 }
                             }
-                             break;
+
+                            break;
                         }
                     case 3:
                         {
@@ -143,7 +165,8 @@ namespace conditions
                                     Console.WriteLine($"Помилка бази даних: {ex.Message}");
                                 }
                             }
-                             break;
+                            break;
+
                         }
                     case 4:
                         {
@@ -179,9 +202,6 @@ namespace conditions
                                     command.Parameters.AddWithValue("@last_name", last_name);
                                     command.Parameters.AddWithValue("@position", position);
 
-
-
-
                                     // 4. Виконуємо команду
                                     int result = command.ExecuteNonQuery();
 
@@ -196,8 +216,97 @@ namespace conditions
                                 }
                             }
                              break;
+                            
+                            
                         }
+                    case 5:
+                    {
 
+                            MySqlConnection connection = new MySqlConnection(connString);
+                            Console.WriteLine("ведіть 1мя користувача");
+                            string name= Convert.ToString(Console.ReadLine());
+                            Console.Clear();
+                            try
+                            {
+                                connection.Open();
+                                Console.WriteLine("З'єднання встановлено успішно!");
+
+                                string query = "SELECT * FROM users WHERE `name` LIKE CONCAT(@name, '%')";
+                               
+                                MySqlCommand command = new MySqlCommand(query, connection);
+                                command.Parameters.AddWithValue("@name",name);
+
+
+                                Write_table(command);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Помилка: " + ex.Message);
+                            }
+                            finally
+                            {
+                                connection.Close();
+                            }
+
+
+                            break;
+
+                    }
+                    case 6:
+                        {
+
+                            MySqlConnection connection = new MySqlConnection(connString);
+                            try
+                            {
+                                connection.Open();
+                                Console.WriteLine("З'єднання встановлено успішно!");
+
+                                string query = "SELECT name, last_name, age FROM users GROUP BY name, last_name, age;";
+                                MySqlCommand command = new MySqlCommand(query, connection);
+                               
+
+
+                                Write_table(command, false,true,true, true,false);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Помилка: " + ex.Message);
+                            }
+                            finally
+                            {
+                                connection.Close();
+                            }
+
+                            break;
+                        }
+                    case 7:
+                        {
+                            MySqlConnection connection = new MySqlConnection(connString);
+
+                            try
+                            {
+                                connection.Open();
+                                Console.WriteLine("З'єднання встановлено успішно!");
+                               
+                                string query = "SELECT* FROM users  ge desc";
+
+                                MySqlCommand command = new MySqlCommand(query, connection);
+                                
+
+
+                                Write_table(command);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Помилка: " + ex.Message);
+                            }
+                            finally
+                            {
+                                connection.Close();
+                            }
+                            //SELECT* FROM users order by age asc
+                            break;
+                        }
 
                     case 0:
                         {
@@ -211,7 +320,7 @@ namespace conditions
                         }
                 }
             }
-
-            }  }
+        }  
     }
+}
 
