@@ -12,39 +12,53 @@ namespace conditions
 {
     internal class Program
     {
-        static void Write_table(MySqlCommand command, bool isId = true, bool isName = true,bool isLastname = true, bool isAge = true, bool isposition = true)
+        /// <summary>
+        /// Зчитує дані з бази даних MySql і виводить їх у консоль у вигляді таблиці.
+        /// </summary>
+        /// <param name="command">Підготовлена SQL-команда (запит SELECT).</param>
+        /// <param name="isId">Чи виводити ID (за замовчуванням true).</param>
+        /// <param name="isName">Чи виводити Ім'я (за замовчуванням true).</param>
+        /// <param name="isLastname">Чи виводити Прізвище (за замовчуванням true).</param>
+        /// <param name="isAge">Чи виводити Вік (за замовчуванням true).</param>
+        /// <param name="isposition">Чи виводити Посаду (за замовчуванням true).</param>
+        static void Write_table(MySqlCommand command, bool isId = true, bool isName = true, bool isLastname = true, bool isAge = true, bool isposition = true)
         {
+            // Створюємо 'reader' для перегляду результатів запиту
             using (MySqlDataReader reader = command.ExecuteReader())
             {
+                // Поки в результатах запиту є рядки, які ми ще не прочитали
                 while (reader.Read())
                 {
+                    // Перевіряємо кожен параметр: якщо true — виводимо відповідну колонку
                     if (isId)
                     {
-                        Console.Write(reader["id"].ToString());
-                        Console.Write("  ");
+                        Console.Write(reader["id"].ToString() + "  ");
                     }
+                    
                     if (isName)
                     {
-                        Console.Write(reader["name"].ToString());
-                        Console.Write("    ");
+                        Console.Write(reader["name"].ToString() + "    ");
                     }
+        
                     if (isLastname)
                     {
-                        Console.Write(reader["last_name"].ToString());
-
-                        Console.Write("    ");
+                        Console.Write(reader["last_name"].ToString() + "    ");
                     }
+        
                     if (isAge)
                     {
-                        Console.Write(reader["age"].ToString());
-                        Console.Write("    ");
+                        Console.Write(reader["age"].ToString() + "    ");
                     }
+        
                     if (isposition)
                     {
+                        // Використовуємо індексатор ["column_name"], щоб дістати значення
                         Console.Write(reader["position"].ToString());
                     }
-                    Console.WriteLine("    ");
-
+        
+                    // Після того як надрукували всі колонки одного рядка, 
+                    // переходимо на новий рядок для наступного запису.
+                    Console.WriteLine();
                 }
             }
         }
