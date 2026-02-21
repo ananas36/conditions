@@ -158,10 +158,7 @@ namespace conditions
                                 {
                                     connection.Open();
                                     MySqlCommand command = new MySqlCommand(sqlExpression, connection);
-
-
                                     command.Parameters.AddWithValue("@id", userIdToRemove);
-
                                     int number = command.ExecuteNonQuery();
 
                                     if (number > 0)
@@ -185,8 +182,6 @@ namespace conditions
                     case 4:
                         {
                             Console.WriteLine("ЩО ТИ ТУТ ЗАБРАВСЯ М1НЯТИ?");
-                            
-
                             // Дані, які ми хочемо змінити
                             
                             Console.WriteLine("ведіть id користувача якого хочити редагувати");
@@ -199,8 +194,6 @@ namespace conditions
                             string position = Convert.ToString(Console.ReadLine()); Console.Clear();
                             // 2. SQL-запит з використанням SET та параметрів
                             string sqlExpression = "UPDATE Users SET name = @name,position = @position,last_name = @last_name WHERE Id = @id";
-                            
-
 
                             using (MySqlConnection connection = new MySqlConnection(connString))
                             {
@@ -209,7 +202,6 @@ namespace conditions
                                     connection.Open();
 
                                     MySqlCommand command = new MySqlCommand(sqlExpression, connection);
-
                                     // 3. Додаємо всі параметри для безпеки
                                     command.Parameters.AddWithValue("@name", newName);
                                     command.Parameters.AddWithValue("@id", userId);
@@ -250,7 +242,6 @@ namespace conditions
                                 MySqlCommand command = new MySqlCommand(query, connection);
                                 command.Parameters.AddWithValue("@name",name);
 
-
                                 Write_table(command);
                             }
                             catch (Exception ex)
@@ -261,14 +252,11 @@ namespace conditions
                             {
                                 connection.Close();
                             }
-
-
                             break;
 
                     }
                     case 6:
                         {
-
                             MySqlConnection connection = new MySqlConnection(connString);
                             try
                             {
@@ -277,9 +265,6 @@ namespace conditions
 
                                 string query = "SELECT name, last_name, age FROM users GROUP BY name, last_name, age;";
                                 MySqlCommand command = new MySqlCommand(query, connection);
-                               
-
-
                                 Write_table(command, false,true,true, true,false);
                             }
                             catch (Exception ex)
@@ -295,30 +280,38 @@ namespace conditions
                         }
                     case 7:
                         {
+                            // 1. Створюємо об'єкт підключення, передаючи йому рядок з налаштуваннями (адреса, назва БД, логін, пароль)
                             MySqlConnection connection = new MySqlConnection(connString);
-
-                            try
+                            
+                            try 
                             {
+                                // 2. Намагаємося відкрити "двері" до бази даних
                                 connection.Open();
                                 Console.WriteLine("З'єднання встановлено успішно!");
-                               
-                                string query = "SELECT* FROM users  ge desc";
-
+                            
+                                // 3. Формуємо текст SQL-запиту (команда базі даних)
+                                string query = "SELECT * FROM users ORDER BY age DESC";
+                            
+                                // 4. Створюємо команду, яка об'єднує текст запиту та наше відкрите з'єднання
                                 MySqlCommand command = new MySqlCommand(query, connection);
-                                
-
-
+                            
+                                // 5. Передаємо цю команду в наш метод для виводу даних на екран
                                 Write_table(command);
                             }
-                            catch (Exception ex)
+                            catch (Exception ex) 
                             {
+                                // 6. Якщо на будь-якому етапі в блоці try сталася помилка (немає інтернету, невірний пароль тощо)
+                                // ми "ловимо" її тут і виводимо текст помилки, щоб не "покласти" всю програму
                                 Console.WriteLine("Помилка: " + ex.Message);
                             }
-                            finally
+                            finally 
                             {
+                                // 7. Цей блок виконається ЗАВЖДИ: і якщо все добре, і якщо сталася помилка.
+                                // Обов'язково закриваємо з'єднання, щоб звільнити ресурси сервера.
                                 connection.Close();
                             }
-                            //SELECT* FROM users order by age asc
+                            
+                            // Вихід з switch/case (якщо цей код всередині меню)
                             break;
                         }
 
